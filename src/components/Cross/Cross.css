@@ -1,0 +1,14 @@
+.cross {
+    display: inline;
+}
+
+.cross svg {
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+    color: #d8d8d8;
+}
+
+.cross:hover {
+    color: #3e3e3e;
+}

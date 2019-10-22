@@ -1,0 +1,8 @@
+.icon {
+    fill: rgba(0,0,0,0.15);
+    cursor: pointer;
+}
+
+.icon:hover {
+    fill: rgba(0,0,0,0.3);
+}

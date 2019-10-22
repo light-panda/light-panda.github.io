@@ -1,0 +1,53 @@
+import React, {useEffect, useState} from 'react'
+import './Todos.css'
+import {randomHash} from "../../utils/random";
+import {useHover, useLocalStorage} from "use-hooks";
+import {Transition} from "react-transition-group";
+import TodoItem from "./TodoItem";
+
+function Todos() {
+    const [items, setItems] = useLocalStorage('todos', [])
+    const [itemsBeingDeleted, setItemsBeingDeleted] = useState([])
+
+    const [value, setValue] = useState('')
+
+    // removing eventual corrupted state elements
+    useEffect(() => setItems(items.filter(item => item.deleting !== true)), [])
+
+    const handleKeyDown = ({key}) => {
+        if (key === 'Enter' && value.length > 0) {
+            // add new item
+            setItems([{id: randomHash(), text: value, done: false, deleting: false}, ...items])
+            // empty text input
+            setValue('')
+        }
+    }
+
+    const deleteItem = ({id}) => {
+        setItems([
+            ...items.filter(item => item.id !== id)
+        ])
+    }
+
+    const beginDelete = ({id}) => {
+        setItemsBeingDeleted([
+            ...itemsBeingDeleted,
+            {id}
+        ])
+    }
+
+    return (
+        <div className={'container'}>
+            <input type="text" id="input" className="input-text" placeholder="Write an idea ..."
+                   value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown}/>
+            <ul className={'list'}>
+                {items.map(todo => (
+                    <TodoItem key={todo.id} todo={todo} itemsBeingDeleted={itemsBeingDeleted} deleteItem={() => deleteItem({id:todo.id})}/>
+                ))}
+            </ul>
+        </div>
+    )
+
+}
+
+export default Todos

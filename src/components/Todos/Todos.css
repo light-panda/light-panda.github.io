@@ -1,0 +1,75 @@
+.container {
+    margin: 100px auto auto auto;
+}
+
+.list {
+    list-style-type: none;
+    padding-inline-start: 0;
+}
+
+.list__item {
+    position: relative;
+    margin: 17px auto 20px auto;
+    display: table;
+}
+
+.list__item__content {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    color: black;
+    font-weight: 400;
+    cursor: grab;
+}
+
+.list__item__content:hover {
+    background-color: rgba(245, 245, 245, 1);
+}
+
+.list__item__toolbox {
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    top: 50%;
+    transform: translate(0%, -50%);
+    right: 0px;
+    transition: right 300ms;
+    width: 90px;
+    height: 25px;
+}
+
+.list__item__toolbox-enter-done {
+    position: absolute;
+    top: 50%;
+    transform: translate(0%, -50%);
+    right: -80px;
+}
+
+.list__item__toolbox-exit {
+    right: -80px;
+}
+
+.input-text {
+    display: block;
+    margin: 0 auto 30px auto;
+    padding: 0.8rem 1.6rem;
+    color: inherit;
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: inherit;
+    line-height: 1.2rem;
+    border: none;
+    border-radius: 0.4rem;
+    transition: box-shadow 300ms;
+    box-shadow: 1px 2px 5px #ccc;
+}
+
+.input-text::placeholder {
+    color: #ccc;
+    font-weight: bold;
+}
+
+.input-text:focus {
+    outline: none;
+    box-shadow: 0.15rem 0.5rem 1.2rem #bbb;
+}
