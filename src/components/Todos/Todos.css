@@ -2,15 +2,22 @@
     margin: 100px auto auto auto;
 }
 
+.list-droppable {
+    display: inline-block;
+}
+
 .list {
     list-style-type: none;
     padding-inline-start: 0;
+    display: inline-block;
+    text-align: center;
 }
 
 .list__item {
     position: relative;
-    margin: 17px auto 20px auto;
+    margin: 0 0 14px 0;
     display: table;
+    outline: 0;
 }
 
 .list__item__content {

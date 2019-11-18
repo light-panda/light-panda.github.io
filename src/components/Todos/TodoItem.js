@@ -26,7 +26,7 @@ function useHover() {
 }
 
 
-function TodoItem({todo, itemsBeingDeleted, deleteItem}) {
+const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, innerRef, innerProps}, ref) => {
     const [hoverProps, isHovered] = useHover()
     const [hoverToolboxProps, isToolboxHovered] = useHover()
     const [extended, setExtended] = useState(false)
@@ -35,7 +35,7 @@ function TodoItem({todo, itemsBeingDeleted, deleteItem}) {
         <Transition in={!!itemsBeingDeleted.find(item => item.id === todo.id)}
                     timeout={duration} onEntered={() => deleteItem({id: todo.id})}>
             {deletingState => (
-                <div className={'list__item'}>
+                <div className={'list__item'} ref={ref || innerRef} {...innerProps}>
                     <CSSTransition in={isHovered || (isToolboxHovered && extended)} timeout={{enter: 0, exit: 500}}
                                    classNames={'list__item__toolbox'}
                                    onEntered={() => setExtended(true)}
@@ -54,6 +54,6 @@ function TodoItem({todo, itemsBeingDeleted, deleteItem}) {
             )}
         </Transition>
     )
-}
+})
 
 export default TodoItem
