@@ -40,7 +40,7 @@ function Todos() {
     <div className={'container'}>
       <input type="text" id="input" className="input-text" placeholder="Write an idea ..."
              value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown}/>
-      <QueueAnim component={'ul'} className={'list'} type={['top','top']}>
+      <QueueAnim component={'ul'} className={'list'} type={['top','top']} appear={false}>
         {items.map(todo => (
           <TodoItem key={todo.id} todo={todo} itemsBeingDeleted={itemsBeingDeleted}
                     deleteItem={() => deleteItem({id: todo.id})}/>
