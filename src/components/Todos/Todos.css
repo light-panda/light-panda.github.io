@@ -32,21 +32,29 @@
     position: absolute;
     top: 50%;
     transform: translate(0%, -50%);
-    right: 0px;
-    transition: right 300ms;
-    width: 90px;
+    left: 100%;
+    transition: width 300ms;
+    width: 0;
+    overflow: hidden;
     height: 25px;
 }
 
-.list__item__toolbox-enter-done {
+.list__item__toolbox__edit {
     position: absolute;
-    top: 50%;
-    transform: translate(0%, -50%);
-    right: -80px;
+    right: 24px;
+}
+
+.list__item__toolbox__delete {
+    position: absolute;
+    right: 0;
+}
+
+.list__item__toolbox-enter-done {
+    width: 60px;
 }
 
 .list__item__toolbox-exit {
-    right: -80px;
+    width: 60px;
 }
 
 .input-text {

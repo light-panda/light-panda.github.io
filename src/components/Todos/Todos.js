@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import './Todos.css'
 import {randomHash} from "../../utils/random";
-import {useHover, useLocalStorage} from "use-hooks";
+import {useLocalStorage} from "use-hooks";
 import TodoItem from "./TodoItem";
 import QueueAnim from 'rc-queue-anim';
 
@@ -40,7 +40,7 @@ function Todos() {
     <div className={'container'}>
       <input type="text" id="input" className="input-text" placeholder="Write an idea ..."
              value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown}/>
-      <QueueAnim component={'ul'} className={'list'} type={['top','right']}>
+      <QueueAnim component={'ul'} className={'list'} type={['top','top']}>
         {items.map(todo => (
           <TodoItem key={todo.id} todo={todo} itemsBeingDeleted={itemsBeingDeleted}
                     deleteItem={() => deleteItem({id: todo.id})}/>
@@ -48,7 +48,6 @@ function Todos() {
       </QueueAnim>
     </div>
   )
-
 }
 
 export default Todos

@@ -4,8 +4,8 @@ import {DeleteIcon, EditIcon} from "../Icons/icons";
 function Toolbox({className, innerProps, onDelete}) {
     return (
         <div className={className} {...innerProps}>
-            <EditIcon/>
-            <DeleteIcon onClick={onDelete}/>
+            <EditIcon className={'list__item__toolbox__edit'}/>
+            <DeleteIcon onClick={onDelete} className={'list__item__toolbox__delete'}/>
         </div>
     )
 }
