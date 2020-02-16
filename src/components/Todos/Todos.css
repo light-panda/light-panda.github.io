@@ -4,6 +4,7 @@
 
 .list-droppable {
     display: inline-block;
+    max-width: 100%;
 }
 
 .list {
@@ -78,6 +79,7 @@
     transition: box-shadow 300ms;
     box-shadow: 1px 2px 5px #ccc;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 .input-text::placeholder {
