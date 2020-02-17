@@ -1,6 +1,8 @@
 import {CSSTransition, Transition} from "react-transition-group";
 import React, {useState} from "react";
 import Toolbox from "../Toolbox/Toolbox";
+import classNames from 'classnames';
+import mobile from "is-mobile";
 
 const duration = 400
 
@@ -26,7 +28,7 @@ function useHover() {
 }
 
 
-const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, innerRef, innerProps}, ref) => {
+const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, innerRef, innerProps, onClick}, ref) => {
     const [hoverProps, isHovered] = useHover()
     const [hoverToolboxProps, isToolboxHovered] = useHover()
     const [extended, setExtended] = useState(false)
@@ -35,15 +37,16 @@ const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, innerR
         <Transition in={!!itemsBeingDeleted.find(item => item.id === todo.id)}
                     timeout={duration} onEntered={() => deleteItem({id: todo.id})}>
             {deletingState => (
-                <div className={'list__item'} ref={ref || innerRef} {...innerProps}>
-                    <CSSTransition in={isHovered || (isToolboxHovered && extended)} timeout={{enter: 0, exit: 500}}
+                <div className={'list__item'}
+                     ref={ref || innerRef} {...innerProps}>
+                    <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: 500}}
                                    classNames={'list__item__toolbox'}
                                    onEntered={() => setExtended(true)}
                                    onExited={() => setExtended(false)}>
                         {() => (
                             <>
                                 <Toolbox className={'list__item__toolbox'} innerProps={hoverToolboxProps} onDelete={deleteItem}/>
-                                <li {...hoverProps} className={'list__item__content'}
+                                <li {...hoverProps} onClick={onClick} className={classNames('list__item__content', mobile() && todo.selected && 'list__item__content-selected')}
                                     style={{...defaultStyle, ...transitionStyles[deletingState]}}>
                                     {todo.text}
                                 </li>
@@ -55,5 +58,9 @@ const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, innerR
         </Transition>
     )
 })
+
+TodoItem.defaultProps = {
+  selected: false
+}
 
 export default TodoItem

@@ -45,6 +45,13 @@ function Todos() {
     ])
   }
 
+  const selectItem = ({id}) => {
+    setItems(items.map(item => item.id === id
+      ? {...item, selected:!item.selected}
+      : {...item, selected: false})
+    )
+  }
+
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -78,7 +85,8 @@ function Todos() {
                                   ...provided.draggableProps,
                                   ...provided.dragHandleProps
                                 }}
-                                style={provided.draggableProps.style}/>
+                                style={provided.draggableProps.style}
+                                onClick={() => selectItem(todo)}/>
                     )}
                   </Draggable>
                 ))}
