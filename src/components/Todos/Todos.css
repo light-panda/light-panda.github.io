@@ -29,6 +29,7 @@
     color: black;
     font-weight: 400;
     cursor: grab;
+    word-break: break-word;
 }
 
 .list__item__content:hover {
