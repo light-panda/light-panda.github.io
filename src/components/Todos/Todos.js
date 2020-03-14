@@ -76,19 +76,12 @@ function Todos() {
               <QueueAnim component={'ul'} className={'list'} type={['top', 'top']}
                          appear={false}>
                 {items.map((todo, index) => (
-                  <Draggable key={todo.id} draggableId={todo.id} index={index}>
-                    {(provided) => (
-                      <TodoItem todo={todo} itemsBeingDeleted={itemsBeingDeleted}
-                                deleteItem={() => deleteItem({id: todo.id})}
-                                innerRef={provided.innerRef}
-                                innerProps={{
-                                  ...provided.draggableProps,
-                                  ...provided.dragHandleProps
-                                }}
-                                style={provided.draggableProps.style}
-                                onClick={() => selectItem(todo)}/>
-                    )}
-                  </Draggable>
+                  <TodoItem todo={todo}
+                            key={todo.id}
+                            itemsBeingDeleted={itemsBeingDeleted}
+                            index={index}
+                            deleteItem={() => deleteItem({id: todo.id})}
+                            onClick={() => selectItem(todo)}/>
                 ))}
                 {provided.placeholder}
               </QueueAnim>
