@@ -15,8 +15,13 @@
 }
 
 .list__item {
+    padding: 8px;
+    outline: 0;
+}
+
+.list__item__sticker {
     position: relative;
-    margin: 0 0 14px 0;
+    margin: 0 auto 0 auto;
     display: table;
     outline: 0;
 }

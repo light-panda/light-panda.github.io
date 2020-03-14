@@ -37,22 +37,23 @@ const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, innerR
         <Transition in={!!itemsBeingDeleted.find(item => item.id === todo.id)}
                     timeout={duration} onEntered={() => deleteItem({id: todo.id})}>
             {deletingState => (
-                <div className={'list__item'}
-                     ref={ref || innerRef} {...innerProps}>
-                    <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: 500}}
-                                   classNames={'list__item__toolbox'}
-                                   onEntered={() => setExtended(true)}
-                                   onExited={() => setExtended(false)}>
-                        {() => (
-                            <>
-                                <Toolbox className={'list__item__toolbox'} innerProps={hoverToolboxProps} onDelete={deleteItem}/>
-                                <li {...hoverProps} onClick={onClick} className={classNames('list__item__content', mobile() && todo.selected && 'list__item__content-selected')}
-                                    style={{...defaultStyle, ...transitionStyles[deletingState]}}>
-                                    {todo.text}
-                                </li>
-                            </>
-                        )}
-                    </CSSTransition>
+                <div className={'list__item'} ref={ref || innerRef} {...innerProps}>
+                    <div className={'list__item__sticker'}>
+                        <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: 500}}
+                                       classNames={'list__item__toolbox'}
+                                       onEntered={() => setExtended(true)}
+                                       onExited={() => setExtended(false)}>
+                            {() => (
+                                <>
+                                    <Toolbox className={'list__item__toolbox'} innerProps={hoverToolboxProps} onDelete={deleteItem}/>
+                                    <li {...hoverProps} onClick={onClick} className={classNames('list__item__content', mobile() && todo.selected && 'list__item__content-selected')}
+                                        style={{...defaultStyle, ...transitionStyles[deletingState]}}>
+                                        {todo.text}
+                                    </li>
+                                </>
+                            )}
+                        </CSSTransition>
+                    </div>
                 </div>
             )}
         </Transition>
