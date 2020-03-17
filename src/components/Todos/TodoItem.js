@@ -4,6 +4,7 @@ import Toolbox from "../Toolbox/Toolbox";
 import classNames from 'classnames';
 import mobile from "is-mobile";
 import {Draggable} from "react-beautiful-dnd";
+import Editable from "../Editable";
 
 const duration = 400
 
@@ -35,29 +36,36 @@ function useHover() {
 }
 
 
-const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, onClick, index}, ref) => {
+const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, toggleItemSelection, index, setEditable, editItem}, ref) => {
     const [hoverProps, isHovered] = useHover()
     const [hoverToolboxProps, isToolboxHovered] = useHover()
     const [extended, setExtended] = useState(false)
 
+
+    const handleTouchStart = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleItemSelection();
+    }
+
     return (
-        <Draggable key={todo.id} draggableId={todo.id} index={index}>
+        <Draggable key={todo.id} draggableId={todo.id} index={index} isDragDisabled={mobile() ? false : (!isHovered || isToolboxHovered)}>
             {(provided) => (
                 <Transition in={!!itemsBeingDeleted.find(item => item.id === todo.id)}
                             timeout={duration} onEntered={() => deleteItem({id: todo.id})}>
                     {deletingState => (
                         <div className={'list__item'} ref={el => callEach(ref,provided.innerRef)(el)} {...provided.draggableProps} {...provided.dragHandleProps}>
-                            <div className={'list__item__sticker'}>
-                                <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: 500}}
+                            <div className={'list__item__sticker'} {...hoverProps}>
+                                <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: mobile() ? 0 : 500}}
                                                classNames={'list__item__toolbox'}
                                                onEntered={() => setExtended(true)}
                                                onExited={() => setExtended(false)}>
                                     {() => (
                                         <>
-                                            <Toolbox className={'list__item__toolbox'} innerProps={hoverToolboxProps} onDelete={deleteItem}/>
-                                            <li {...hoverProps} onClick={onClick} className={classNames('list__item__content', mobile() && todo.selected && 'list__item__content-selected')}
+                                            <Toolbox className={'list__item__toolbox'} innerProps={hoverToolboxProps} onDelete={deleteItem} onEdit={() => setEditable(true)}/>
+                                            <li onTouchStart={handleTouchStart} className={classNames('list__item__content', (mobile() && todo.selected || !mobile() && isHovered && false) && 'list__item__content-selected')}
                                                 style={{...defaultStyle, ...transitionStyles[deletingState]}}>
-                                                {todo.text}
+                                                <Editable value={todo.text} editable={todo.editable} onSave={editItem} setEditable={setEditable}/>
                                             </li>
                                         </>
                                     )}
@@ -72,7 +80,8 @@ const  TodoItem = React.forwardRef(({todo, itemsBeingDeleted, deleteItem, onClic
 })
 
 TodoItem.defaultProps = {
-  selected: false
+  selected: false,
+  toggleItemSelection: () => {}
 }
 
 export default TodoItem

@@ -4,7 +4,7 @@ import {randomHash} from "../../utils/random";
 import {useLocalStorage} from "use-hooks";
 import TodoItem from "./TodoItem";
 import QueueAnim from 'rc-queue-anim';
-import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+import {DragDropContext, Droppable} from "react-beautiful-dnd";
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -26,10 +26,25 @@ function Todos() {
   const handleKeyDown = ({key}) => {
     if (key === 'Enter' && value.length > 0) {
       // add new item
-      setItems([{id: randomHash(), text: value, done: false, deleting: false}, ...items])
+      setItems([{id: randomHash(), text: value, done: false, deleting: false, editable: false}, ...items])
       // empty text input
       setValue('')
     }
+  }
+
+  const setEditable = ({id, editable}) => {
+    setItems(items.map(item => item.id === id
+      ? {...item, editable}
+      : {...item, editable: false})
+    )
+  }
+
+  const editItem = ({id, text}) => {
+    console.log({id, text})
+    setItems(items.map(item => item.id === id
+        ? {...item, text, editable: false}
+        : {...item, editable: false})
+    )
   }
 
   const deleteItem = ({id}) => {
@@ -45,11 +60,16 @@ function Todos() {
     ])
   }
 
-  const selectItem = ({id}) => {
+  const toggleItemSelection = ({id}) => {
     setItems(items.map(item => item.id === id
       ? {...item, selected:!item.selected}
       : {...item, selected: false})
     )
+  }
+
+  const deselectAllItems = () => {
+    setItems(items.map(item => ({...item, selected:false})))
+    console.log('hi');
   }
 
   const onDragEnd = (result) => {
@@ -66,14 +86,14 @@ function Todos() {
   }
 
   return (
-    <div className={'container'}>
+    <div className={'container'} onTouchStart={deselectAllItems}>
       <input type="text" id="input" className="input-text" placeholder="Write an idea ..."
              value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown}/>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId={'droppable'}>
           {(provided) => (
             <div  {...provided.droppableProps} ref={provided.innerRef} className={'list-droppable'}>
-              <QueueAnim component={'ul'} className={'list'} type={['top', 'top']}
+              <QueueAnim component={'ul'} className={'list'} type={['top', 'top']} onTouchStart={deselectAllItems}
                          appear={false}>
                 {items.map((todo, index) => (
                   <TodoItem todo={todo}
@@ -81,7 +101,9 @@ function Todos() {
                             itemsBeingDeleted={itemsBeingDeleted}
                             index={index}
                             deleteItem={() => deleteItem({id: todo.id})}
-                            onClick={() => selectItem(todo)}/>
+                            setEditable={(editable) => setEditable({id: todo.id, editable})}
+                            editItem={(text) => editItem({id: todo.id, text})}
+                            toggleItemSelection={() => toggleItemSelection(todo)}/>
                 ))}
                 {provided.placeholder}
               </QueueAnim>

@@ -1,5 +1,7 @@
 .container {
-    margin: 100px 80px 80px;
+    box-sizing: border-box;
+    padding: 100px 80px 80px;
+    min-height: 100vh;
 }
 
 .list-droppable {
@@ -48,7 +50,7 @@
     transform: translate(0%, -50%);
     left: 100%;
     transition: width 300ms;
-    width: 0;
+    width: 0px;
     overflow: hidden;
     height: 25px;
 }
