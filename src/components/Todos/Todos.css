@@ -37,6 +37,7 @@
     font-weight: 400;
     cursor: grab;
     word-break: break-word;
+    list-style: none;
 }
 
 .list__item__content-selected {
