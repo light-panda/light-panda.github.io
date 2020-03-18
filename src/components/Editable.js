@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import ContentEditable from "react-contenteditable";
+import Linkify from 'react-linkify';
 
 function Editable({onSave, value, className, transformValue, editable, setEditable}) {
   const text = useRef(value);
@@ -40,6 +41,17 @@ function Editable({onSave, value, className, transformValue, editable, setEditab
 
   const handleClick = (event) => {
     event.stopPropagation()
+  }
+
+  if (!editable) {
+    return (
+      <Linkify
+          componentDecorator={(href, text, key) => (
+            <a href={href} key={key} target="_blank" rel="noopener noreferrer">{text}</a>
+          )}>
+        {text.current}
+      </Linkify>
+    )
   }
 
   return (

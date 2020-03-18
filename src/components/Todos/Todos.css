@@ -39,6 +39,10 @@
     list-style: none;
 }
 
+.list__item__content a {
+    color: #588ed6;
+}
+
 .list__item__content__editable:empty:before {
     content: "\00a0"; /* unicode zero width space character */
 }

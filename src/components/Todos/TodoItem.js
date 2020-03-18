@@ -19,6 +19,9 @@ function useHover() {
     return [binder, hovered];
 }
 
+// TODO: shorten/tweak react-spring animation to avoid bouncy unwanted effect
+// TODO: bug: & -> &amp due to react-linkify
+
 const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, index, setEditable, editItem, setOut, setDeleting}, _) => {
     const [hoverProps, isHovered] = useHover()
     const [hoverToolboxProps, isToolboxHovered] = useHover()
