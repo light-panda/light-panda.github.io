@@ -1,12 +1,14 @@
 import {CSSTransition} from "react-transition-group";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Toolbox from "../Toolbox/Toolbox";
 import classNames from 'classnames';
 import mobile from "is-mobile";
 import {Draggable} from "react-beautiful-dnd";
 import Editable from "../Editable";
 import {useSpring, animated} from 'react-spring';
-import useMeasure from "../../utils/useMeasure";
+import mergeRefs from "react-merge-refs";
+import useMeasure from 'react-use-measure';
+import { ResizeObserver } from '@juggle/resize-observer';
 
 const callEach = (...functions) => {
     return (el) => {
@@ -23,19 +25,25 @@ function useHover() {
     return [binder, hovered];
 }
 
+let done = false
 
-const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, index, setEditable, editItem}) => {
+const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, index, setEditable, editItem}, _) => {
     const [hoverProps, isHovered] = useHover()
     const [deleting, setDeleting] = useState(false)
     const [hoverToolboxProps, isToolboxHovered] = useHover()
     const [extended, setExtended] = useState(false)
 
-    const [{ref}, { height }] = useMeasure()
+    const [ref, { height }] = useMeasure({ polyfill: ResizeObserver })
 
-    // list__item has hardcoded padding: 8px so we put + 2*8 here to take padding into account
-    // the height value comes from the ResizeObserver API so we can't get the padding value, nor box-sizing: border-box;
-    // nor replace the padding by a margin because it would break drag&drop behavior
-    const deletingStyle = useSpring({opacity: deleting ? 0 : 1, marginTop: deleting ? -(height + 2*8) : 0})
+    const deletingStyle = useSpring({
+        opacity: deleting ? 0 : 1,
+        marginTop: deleting ? -height : 0,
+        onRest: props => {
+            if (props.opacity <= 0) {
+                deleteItem()
+            }
+        }
+    })
 
     const handleTouchStart = (event) => {
         event.preventDefault();
@@ -44,13 +52,18 @@ const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, inde
     }
 
     return (
-        <Draggable key={todo.id} draggableId={todo.id} index={index} isDragDisabled={mobile() ? false : (!isHovered || isToolboxHovered)}>
+        <Draggable key={todo.id} draggableId={todo.id} index={index} isDragDisabled={deleting || (mobile() ? false : (!isHovered || isToolboxHovered))}>
             {(provided) => (
                 <animated.div className={'list__item'}
-                              ref={el => {ref.current = el; provided.innerRef(el)}}
+                              ref={mergeRefs([ref, provided.innerRef])}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              style={{...provided.draggableProps.style, ...provided.dragHandleProps ? provided.dragHandleProps.style : {}, ...deletingStyle}}
+                              style={{
+                                  ...provided.draggableProps.style,
+                                  ...provided.dragHandleProps ? provided.dragHandleProps.style : {},
+                                  ...deletingStyle,
+                                  pointerEvents: deleting ? 'none' : ''
+                              }}
                 >
                     <div className={'list__item__sticker'} {...hoverProps}>
                         <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: mobile() ? 0 : 500}}

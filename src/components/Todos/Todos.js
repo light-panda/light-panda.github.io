@@ -42,9 +42,7 @@ function Todos() {
   }
 
   const deleteItem = ({id}) => {
-    setItems([
-      ...items.filter(item => item.id !== id)
-    ])
+    setItems(items.filter(item => item.id !== id))
   }
 
   const toggleItemSelection = ({id}) => {
