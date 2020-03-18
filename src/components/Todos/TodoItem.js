@@ -5,16 +5,10 @@ import classNames from 'classnames';
 import mobile from "is-mobile";
 import {Draggable} from "react-beautiful-dnd";
 import Editable from "../Editable";
-import {useSpring, animated} from 'react-spring';
+import {useSpring, animated, config} from 'react-spring';
 import mergeRefs from "react-merge-refs";
 import useMeasure from 'react-use-measure';
 import { ResizeObserver } from '@juggle/resize-observer';
-
-const callEach = (...functions) => {
-    return (el) => {
-        functions.forEach(func => console.log(func) || typeof func === 'function' && func(el))
-    }
-}
 
 function useHover() {
     const [hovered, set] = useState(false);
@@ -25,25 +19,35 @@ function useHover() {
     return [binder, hovered];
 }
 
-let done = false
-
-const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, index, setEditable, editItem}, _) => {
+const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, index, setEditable, editItem, setOut, setDeleting}, _) => {
     const [hoverProps, isHovered] = useHover()
-    const [deleting, setDeleting] = useState(false)
     const [hoverToolboxProps, isToolboxHovered] = useHover()
     const [extended, setExtended] = useState(false)
+    const [gettingIn, setGettingIn] = useState(false)
 
     const [ref, { height }] = useMeasure({ polyfill: ResizeObserver })
 
-    const deletingStyle = useSpring({
-        opacity: deleting ? 0 : 1,
-        marginTop: deleting ? -height : 0,
+    const listItemAnimatedStyle = useSpring({
+        opacity: todo.deleting ? 0 : 1,
+        marginTop: todo.deleting ? -(height + 2*8) : 0,
+        ...(gettingIn ? {height: todo.out ? 0 : height} : {}),
         onRest: props => {
             if (props.opacity <= 0) {
                 deleteItem()
             }
         }
     })
+
+    const stickerAnimatedStyle = useSpring({
+        marginTop: todo.out ? -80 : 0
+    })
+
+    useEffect(() => {
+        if (todo.out) {
+            setOut(false)
+            setGettingIn(true)
+        }
+    }, [])
 
     const handleTouchStart = (event) => {
         event.preventDefault();
@@ -52,21 +56,28 @@ const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, inde
     }
 
     return (
-        <Draggable key={todo.id} draggableId={todo.id} index={index} isDragDisabled={deleting || (mobile() ? false : (!isHovered || isToolboxHovered))}>
-            {(provided) => (
+        <Draggable key={todo.id} draggableId={todo.id} index={index} isDragDisabled={todo.deleting || (mobile() ? false : (!isHovered || isToolboxHovered))}>
+            {(provided, snapshot) => (
                 <animated.div className={'list__item'}
-                              ref={mergeRefs([ref, provided.innerRef])}
+                              ref={mergeRefs([provided.innerRef])}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               style={{
                                   ...provided.draggableProps.style,
                                   ...provided.dragHandleProps ? provided.dragHandleProps.style : {},
-                                  ...deletingStyle,
-                                  pointerEvents: deleting ? 'none' : ''
+                                  ...listItemAnimatedStyle,
+                                  pointerEvents: todo.deleting ? 'none' : ''
                               }}
                 >
-                    <div className={'list__item__sticker'} {...hoverProps}>
-                        <CSSTransition in={mobile() ? todo.selected : (isHovered || (isToolboxHovered && extended))} timeout={{enter: 0, exit: mobile() ? 0 : 500}}
+                    <animated.div className={'list__item__sticker'}
+                         ref={ref}
+                         {...hoverProps}
+                         style={{
+                             ...stickerAnimatedStyle
+                         }}
+                    >
+                        <CSSTransition in={mobile() ? todo.selected : (isHovered || snapshot.isDragging || (isToolboxHovered && extended))}
+                                       timeout={{enter: 0, exit: mobile() ? 0 : 500}}
                                        classNames={'list__item__toolbox'}
                                        onEntered={() => setExtended(true)}
                                        onExited={() => setExtended(false)}>
@@ -74,13 +85,14 @@ const  TodoItem = React.forwardRef(({todo, deleteItem, toggleItemSelection, inde
                                 <>
                                     <Toolbox className={'list__item__toolbox'} innerProps={hoverToolboxProps} onDelete={() => setDeleting(true)} onEdit={() => setEditable(true)}/>
                                     <li onTouchStart={handleTouchStart}
-                                        className={classNames('list__item__content', mobile() && todo.selected && 'list__item__content-selected')}>
-                                        <Editable value={todo.text} editable={todo.editable} onSave={editItem} setEditable={setEditable}/>
+                                        className={classNames('list__item__content', mobile() && todo.selected && 'list__item__content-selected')}
+                                    >
+                                        <Editable value={todo.text} editable={todo.editable} onSave={editItem} setEditable={setEditable} className={'list__item__content__editable'}/>
                                     </li>
                                 </>
                             )}
                         </CSSTransition>
-                    </div>
+                    </animated.div>
                 </animated.div>
             )}
         </Draggable>

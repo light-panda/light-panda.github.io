@@ -21,10 +21,40 @@ function Todos() {
   const handleKeyDown = ({key}) => {
     if (key === 'Enter' && value.length > 0) {
       // add new item
-      setItems([{id: randomHash(), text: value, editable: false}, ...items])
+      setItems([{id: randomHash(), text: value, editable: false, out: true, deleting: false}, ...items])
       // empty text input
       setValue('')
     }
+  }
+
+  useEffect(() => {
+    // backward compatibility
+    setItems(items.map(item => ({
+      ...item,
+      out: item.out === undefined ? false : item.out,
+      deleting: item.deleting ? false : item.deleting
+    })))
+
+    // fix potential corrupted state
+    items.forEach(item => {
+      if (item.deleting) {
+        //deleteItem(item.id)
+      }
+    })
+  }, [])
+
+  const setDeleting = ({id, deleting}) => {
+    setItems(items.map(item => item.id === id
+        ? {...item, deleting}
+        : item)
+    )
+  }
+
+  const setOut = ({id, out}) => {
+    setItems(items.map(item => item.id === id
+        ? {...item, out}
+        : item)
+    )
   }
 
   const setEditable = ({id, editable}) => {
@@ -84,6 +114,8 @@ function Todos() {
                             deleteItem={() => deleteItem({id: todo.id})}
                             setEditable={(editable) => setEditable({id: todo.id, editable})}
                             editItem={(text) => editItem({id: todo.id, text})}
+                            setDeleting={(deleting) => setDeleting({id: todo.id, deleting})}
+                            setOut={(out) => setOut({id: todo.id, out})}
                             toggleItemSelection={() => toggleItemSelection(todo)}/>
                 ))}
                 {provided.placeholder}
