@@ -34,13 +34,6 @@ function Todos() {
       out: item.out === undefined ? false : item.out,
       deleting: item.deleting ? false : item.deleting
     })))
-
-    // fix potential corrupted state
-    items.forEach(item => {
-      if (item.deleting) {
-        //deleteItem(item.id)
-      }
-    })
   }, [])
 
   const setDeleting = ({id, deleting}) => {
