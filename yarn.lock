@@ -4174,6 +4174,11 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
+fetch-factorized@^1.5.14:
+  version "1.5.14"
+  resolved "https://registry.yarnpkg.com/fetch-factorized/-/fetch-factorized-1.5.14.tgz#2d0522429b202efe15c2e55e7fa4ea23f763ad85"
+  integrity sha512-GP0zDsgOMTbZ85+3o2vqoixNPiB5PzY16KfpLTWi9GgdI4Y6MoNqKV4e90INSyfQYw8eGjGR7W5JMzaB6PWPYQ==
+
 figgy-pudding@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.1.tgz#862470112901c727a0e495a80744bd5baa1d6790"
@@ -8276,7 +8281,14 @@ react-merge-refs@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-merge-refs/-/react-merge-refs-1.0.0.tgz#d6b297b9a62a266460a3c0d8b9d920731d8bbe63"
   integrity sha512-VkvWuCR5VoTjb+VYUcOjkFo66HDv1Hw8VjKcwQtWr2lJnT8g7epRRyfz8+Zkl2WhwqNeqR0gIe0XYrBa9ePeXg==
 
-react-redux@^7.1.1:
+react-redux-pull@^0.1.0:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-redux-pull/-/react-redux-pull-0.1.1.tgz#4c2d2dd5291f3043b2b05fd7d0fb25309a8c98a5"
+  integrity sha512-UR07ISJQRnEzKwWlrIznJolIV43Me6/UbUEPtNlOXG3mlgForfQxB5PEzKFQkxxbiSEmHLhsGPMU6wvRF/iPsQ==
+  dependencies:
+    fetch-factorized "^1.5.14"
+
+react-redux@^7.1.1, react-redux@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.0.tgz#f970f62192b3981642fec46fd0db18a074fe879d"
   integrity sha512-EvCAZYGfOLqwV7gh849xy9/pt55rJXPwmYvI4lilPM5rUT/1NxuuN59ipdBksRVSvz0KInbPnp4IfoXJXCqiDA==
@@ -8461,7 +8473,12 @@ recursive-readdir@2.2.2:
   dependencies:
     minimatch "3.0.4"
 
-redux@^4.0.4:
+redux-thunk@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
+  integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
+
+redux@^4.0.4, redux@^4.0.5:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
   integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==
